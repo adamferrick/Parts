@@ -14,6 +14,13 @@ Parts {
     cbs.add(cb);
   }
 
+  playAll {
+    cbs.do({
+      arg cb;
+      cb.value;
+    });
+  }
+
   play {
     arg sel;
     var selectedIds = Set.new;
