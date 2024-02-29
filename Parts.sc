@@ -24,14 +24,13 @@ Parts {
   }
 
   play {
-    arg sel;
+    arg ... sels;
     var selectedIds = Set.new;
     var selectedCbs = List.new;
-    var exprs = sel.split($,);
-    exprs.do({
-      arg expr;
-      if(expr.contains(":"), {
-        var bounds = expr.split($:);
+    sels.do({
+      arg sel;
+      if(sel.contains(":"), {
+        var bounds = sel.split($:);
         for(indices.at(bounds[0]), indices.at(bounds[1]), {
           arg id;
           selectedIds.includes(id).not && {
@@ -40,7 +39,7 @@ Parts {
           };
         });
       }, {
-        var id = indices.at(expr);
+        var id = indices.at(sel);
         selectedIds.includes(id).not && {
           selectedCbs.add(cbs[id]);
           selectedIds.add(id);
