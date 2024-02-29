@@ -1,16 +1,18 @@
 Parts {
-  var indices, cbs;
+  var indices, identifiers, cbs;
 
   *new { ^super.new.make; }
 
   make {
     indices = Dictionary.new;
+    identifiers = List.new;
     cbs = List.new;
   }
 
   register {
     arg id, cb;
     indices.put(id, cbs.size);
+    identifiers.add(id);
     cbs.add(cb);
   }
 
@@ -40,6 +42,26 @@ Parts {
       }, {
         var id = indices.at(expr);
         selectedIds.includes(id).not && {
+          selectedCbs.add(cbs[id]);
+          selectedIds.add(id);
+        };
+      });
+    });
+    selectedCbs.do({
+      arg cb;
+      cb.value;
+    });
+  }
+
+  playMatches {
+    arg ... pats;
+    var selectedIds = Set.new;
+    var selectedCbs = List.new;
+    pats.do({
+      arg pat;
+      identifiers.do({
+        arg identifier, id;
+        selectedIds.includes(id).not && pat.matchRegexp(identifier) && {
           selectedCbs.add(cbs[id]);
           selectedIds.add(id);
         };
