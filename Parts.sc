@@ -18,14 +18,25 @@ Parts {
     arg sel;
     var selectedIds = Set.new;
     var selectedCbs = List.new;
-    var splits = sel.split($,);
-    splits.do({
-      arg split;
-      var id = indices.at(split);
-      selectedIds.includes(id).not && {
-        selectedCbs.add(cbs[id]);
-        selectedIds.add(id);
-      };
+    var exprs = sel.split($,);
+    exprs.do({
+      arg expr;
+      if(expr.contains(":"), {
+        var bounds = expr.split($:);
+        for(indices.at(bounds[0]), indices.at(bounds[1]), {
+          arg id;
+          selectedIds.includes(id).not && {
+            selectedCbs.add(cbs[id]);
+            selectedIds.add(id);
+          };
+        });
+      }, {
+        var id = indices.at(expr);
+        selectedIds.includes(id).not && {
+          selectedCbs.add(cbs[id]);
+          selectedIds.add(id);
+        };
+      });
     });
     selectedCbs.do({
       arg cb;
